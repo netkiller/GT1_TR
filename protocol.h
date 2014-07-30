@@ -109,36 +109,62 @@ char * login_session_id(char * result){
 	return sessionid;
 }
 
-char * protocol_real(char * chinese_name){
+char * protocol_real(char * sessionid, char * chinese_name){
 	char * rev;
 	xmlDocPtr doc = NULL;
-	xmlNodePtr data = NULL, amsinfo = NULL, cus = NULL, cusinfo = NULL;
+	xmlNodePtr data = NULL, amsinfo = NULL, market = NULL, product = NULL, cus = NULL, cusinfo = NULL;
 
 	doc = xmlNewDoc(BAD_CAST "1.0"); // create a new xml document.
 	data = xmlNewNode(NULL, BAD_CAST "Data"); // create a root node.
-	xmlNewProp(data, BAD_CAST "SessionId", BAD_CAST "Ams3ToAms2ApplyTrDemoMember");
+	xmlNewProp(data, BAD_CAST "SessionId", BAD_CAST sessionid);
 	xmlDocSetRootElement(doc, data);
 
 	amsinfo = xmlNewChild(data, NULL, BAD_CAST "AMSInfo", NULL);
 	xmlNewProp(amsinfo, BAD_CAST "ParentName", BAD_CAST "c1");
-	xmlNewProp(amsinfo, BAD_CAST "NickName", BAD_CAST "w112");
+	xmlNewProp(amsinfo, BAD_CAST "LoginName", BAD_CAST "w112");
 	xmlNewProp(amsinfo, BAD_CAST "pwd", BAD_CAST "1234qwer");
+	xmlNewProp(amsinfo, BAD_CAST "NickName", BAD_CAST "w112");
 	xmlNewProp(amsinfo, BAD_CAST "Limit", BAD_CAST "0");
 	xmlNewProp(amsinfo, BAD_CAST "Platform", BAD_CAST "CASH_GT1_TR");
-	xmlNewProp(amsinfo, BAD_CAST "Demo", BAD_CAST "1");
-	xmlNewProp(amsinfo, BAD_CAST "ExpireTime", BAD_CAST "2014-07-23");
-	xmlNewProp(amsinfo, BAD_CAST "Operator", BAD_CAST "test1");
-	xmlNewProp(amsinfo, BAD_CAST "FixLeverage", BAD_CAST "0");
+	xmlNewProp(amsinfo, BAD_CAST "Demo", BAD_CAST "0");
+	
+	market = xmlNewChild(amsinfo, NULL, BAD_CAST "Market", NULL);
+	xmlNewProp(market, BAD_CAST "Code", BAD_CAST "c001_TR10");
+	
+	product = xmlNewChild(market, NULL, BAD_CAST "Product", NULL);
+	xmlNewProp(product, BAD_CAST "Code", BAD_CAST "GT1/PM/LLG");
+	xmlNewProp(product, BAD_CAST "SpreadShare", BAD_CAST "0");
+	xmlNewProp(product, BAD_CAST "HandleFee", BAD_CAST "0");
+
 
 	cus = xmlNewChild(data, NULL, BAD_CAST "Cus", NULL);
+	xmlNewProp(cus, BAD_CAST "FLAG", BAD_CAST "0");
+	xmlNewProp(cus, BAD_CAST "REALNAME", BAD_CAST "555");
+	xmlNewProp(cus, BAD_CAST "ACTIVE", BAD_CAST "0");
 	xmlNewProp(cus, BAD_CAST "CREATE_USER", BAD_CAST "test1");
 	xmlNewProp(cus, BAD_CAST "CREATE_IP", BAD_CAST "175.45.18.98");
 	xmlNewProp(cus, BAD_CAST "CREATE_DATE", BAD_CAST "2014-04-01 13:37:23");
-
+	xmlNewProp(cus, BAD_CAST "CLIENT_CLASS", BAD_CAST "0");
+			
 	cusinfo = xmlNewChild(data, NULL, BAD_CAST "CusInfo", NULL);
+	xmlNewProp(cusinfo, BAD_CAST "TITLE", BAD_CAST "Mr");
 	xmlNewProp(cusinfo, BAD_CAST "CHINESE_NAME", BAD_CAST chinese_name);
-	xmlNewProp(cusinfo, BAD_CAST "MOBILE_PHONE", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "ENGLISH_NAME", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "ACCOUNT_STATUS", BAD_CAST "A");
+	xmlNewProp(cusinfo, BAD_CAST "ID_DOCUMENT", BAD_CAST "1");
+	xmlNewProp(cusinfo, BAD_CAST "ID_DOCUMENT_NUMBER", BAD_CAST "555");
+	xmlNewProp(cusinfo, BAD_CAST "ID_DOCUMENT_COUNTRY", BAD_CAST "China");
+	xmlNewProp(cusinfo, BAD_CAST "DATE_OF_BIRTH", BAD_CAST "1921-1-1");
+	xmlNewProp(cusinfo, BAD_CAST "NATIONALITY", BAD_CAST "China");
+	xmlNewProp(cusinfo, BAD_CAST "HOME_PHONE", BAD_CAST "86-555");
+	xmlNewProp(cusinfo, BAD_CAST "MOBILE_PHONE", BAD_CAST "86-555");
+	
+	
 	xmlNewProp(cusinfo, BAD_CAST "EMAIL", BAD_CAST "");
+	
+	xmlNewProp(cusinfo, BAD_CAST "ExpireTime", BAD_CAST "2014-07-23");
+	xmlNewProp(cusinfo, BAD_CAST "Operator", BAD_CAST "test1");
+	xmlNewProp(cusinfo, BAD_CAST "FixLeverage", BAD_CAST "0");	
 	
 	xmlAddChild(data, amsinfo);
 	xmlAddChild(data, cus);

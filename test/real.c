@@ -51,16 +51,13 @@ int main(int argc, char **argv)
 	printf("result: %s \n", result);
 	char * session = login_session_id(result);
 	printf("sess: %s \n", session);
-/*
+
 	char *xmlpro;
 	char *html;
-	xmlpro = protocol_demo("test");
-	//printf("xml: %s\n\n", xmlpro);	
+	xmlpro = protocol_real(session, "test");
+	printf("xml: %s\n\n", xmlpro);	
 	
-	html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);
-	
-	
-	printf("html: %s \n", html);	
-	test(html);
-*/	
+	//html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);	
+	//printf("html: %s \n", html);	
+
 }
