@@ -13,9 +13,9 @@ dnl [  --with-gt1             Include gt1 support])
 
 dnl Otherwise use enable:
 
-dnl PHP_ARG_ENABLE(gt1, whether to enable gt1 support,
-dnl Make sure that the comment is aligned:
-dnl [  --enable-gt1           Enable gt1 support])
+PHP_ARG_ENABLE(gt1, whether to enable gt1 support,
+ Make sure that the comment is aligned:
+[  --enable-gt1           Enable gt1 support])
 
 if test "$PHP_GT1" != "no"; then
   dnl Write more examples of tests here...
