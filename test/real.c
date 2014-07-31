@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 	xmlpro = protocol_real(session, "test");
 	printf("xml: %s\n\n", xmlpro);	
 	
-	//html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);	
-	//printf("html: %s \n", html);	
-
+	html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);	
+	printf("html: %s \n", html);	
+	test(html);
 }

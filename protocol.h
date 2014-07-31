@@ -158,16 +158,78 @@ char * protocol_real(char * sessionid, char * chinese_name){
 	xmlNewProp(cusinfo, BAD_CAST "NATIONALITY", BAD_CAST "China");
 	xmlNewProp(cusinfo, BAD_CAST "HOME_PHONE", BAD_CAST "86-555");
 	xmlNewProp(cusinfo, BAD_CAST "MOBILE_PHONE", BAD_CAST "86-555");
-	
-	
+	xmlNewProp(cusinfo, BAD_CAST "ADDRESS0", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "ADDRESS1", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "ADDRESS2", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "PROVINCE", BAD_CAST "anhui");
+	xmlNewProp(cusinfo, BAD_CAST "COUNTRY", BAD_CAST "China");
+	xmlNewProp(cusinfo, BAD_CAST "POSTAL_CODE", BAD_CAST "");
 	xmlNewProp(cusinfo, BAD_CAST "EMAIL", BAD_CAST "");
 	
-	xmlNewProp(cusinfo, BAD_CAST "ExpireTime", BAD_CAST "2014-07-23");
-	xmlNewProp(cusinfo, BAD_CAST "Operator", BAD_CAST "test1");
-	xmlNewProp(cusinfo, BAD_CAST "FixLeverage", BAD_CAST "0");	
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_TITLE", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_CHINESE_NAME", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_ENGLISH_NAME", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_DOCUMENT", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_ID_DOCUMENT_NUMBER", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_ID_DOCUMENT_COUNTRY", BAD_CAST "China");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_DATE_OF_BIRTH", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_NATIONALITY", BAD_CAST "China");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_HOME_PHONE", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_MOBILE_PHONE", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_ADDRESS0", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_ADDRESS1", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_ADDRESS2", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_PROVINCE", BAD_CAST "anhui");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_COUNTRY", BAD_CAST "China");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_POSTAL_CODE", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "CONTACT_EMAIL", BAD_CAST "");
 	
-	xmlAddChild(data, amsinfo);
-	xmlAddChild(data, cus);
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_TYPE", BAD_CAST "Holder");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_CHINESE_NAME", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_ENGLISH_NAME", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_DOCUMENT", BAD_CAST "IdCard");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_DOCUMENT_NUMBER", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_ADDRESS0", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_ADDRESS1", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_ADDRESS2", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_PROVINCE", BAD_CAST "anhui");
+	xmlNewProp(cusinfo, BAD_CAST "EQUITY_COUNTRY", BAD_CAST "China");
+	
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPALFINAL", BAD_CAST "Holder");
+	
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_CHINESE_NAME", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_ENGLISH_NAME", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_DOCUMENT", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_ID_DOCUMENT_NUMBER", BAD_CAST "");
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_ADDRESS0", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_ADDRESS1", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_ADDRESS2", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_PROVINCE", BAD_CAST "anhui");	
+	xmlNewProp(cusinfo, BAD_CAST "PRINCIPAL_COUNTRY", BAD_CAST "China");	
+	
+	xmlNewProp(cusinfo, BAD_CAST "BANK", BAD_CAST "SCB");	
+	xmlNewProp(cusinfo, BAD_CAST "BANK_ACCOUNT_NAME", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "BANK_ACCOUNT_NUMBER", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "INTERNATIONAL_REMITTANCE_CODE", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "BANK_ADDRESS_0", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "BANK_ADDRESS_1", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "BANK_ADDRESS_2", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "BANK_COUNTRY", BAD_CAST "China");	
+	xmlNewProp(cusinfo, BAD_CAST "CURRENCY", BAD_CAST "USD");	
+	xmlNewProp(cusinfo, BAD_CAST "CREATE_USER", BAD_CAST "dong4");	
+	xmlNewProp(cusinfo, BAD_CAST "CREATE_IP", BAD_CAST "175.45.18.98");	
+	xmlNewProp(cusinfo, BAD_CAST "CREATE_DATE", BAD_CAST "2014-04-28 13:34:35");	
+	xmlNewProp(cusinfo, BAD_CAST "PLATFORM", BAD_CAST "CASH_GT1_TR");	
+	
+	xmlNewProp(cusinfo, BAD_CAST "EMPLOYMENT", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "EMPLOYER", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "RELATIONSHIP", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "RELATION", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "OBJECTIVE", BAD_CAST "");	
+	xmlNewProp(cusinfo, BAD_CAST "EXPERIENCE", BAD_CAST "");
+	
+	//xmlAddChild(data, amsinfo);
+	//xmlAddChild(data, cus);
 	
 	xmlChar *s;
 	int size;
