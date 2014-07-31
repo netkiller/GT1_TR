@@ -1,17 +1,30 @@
 GT1 PHP extension
 ================
 
-To use your new extension, you will have to execute the following steps:
+	# /srv/php/bin/phpize 
+	# ./configure --enable-gt1 --with-php-config=/srv/php/bin/php-config
+	# make
+	# make install
+	
+	# cat > /srv/php/etc/conf.d/gt1.ini <<PHP
+	extension=gt1.so
+	[GT1]
+	gt1.url=http://59.152.226.199:3355
+	gt1.demo.user=test1
+	gt1.demo.pass=test1
+	gt1.real.user=test1
+	gt1.real.pass=test1
+	PHP	
 
-1.  $ cd ..
-2.  $ vi ext/gt1/config.m4
-3.  $ ./buildconf
-4.  $ ./configure --[with|enable]-gt1
-5.  $ make
-6.  $ ./sapi/cli/php -f ext/gt1/gt1.php
-7.  $ vi ext/gt1/gt1.c
-8.  $ make
+Check 
+=====
+	# php --ri gt1
 
-Repeat steps 3-6 until you are satisfied with ext/gt1/config.m4 and
-step 6 confirms that your module is compiled into PHP. Then, start writing
-code and repeat the last two steps as often as necessary.
+	gt1
+
+	gt1 support => enabled
+	
+Test
+====
+	# php -d"extension=gt1.so" -m	
+	# php -r "hello();"

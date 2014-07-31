@@ -40,6 +40,10 @@ if test "$PHP_GT1" != "no"; then
   dnl   AC_MSG_ERROR([Please reinstall the gt1 distribution])
   dnl fi
 
+  dnl if ! test -x "/usr/bin/xml2-config"; then
+  dnl	AC_MSG_ERROR(Cannot find libxml2)
+  dnl fi
+
   dnl # --with-gt1 -> add include path
   dnl PHP_ADD_INCLUDE($GT1_DIR/include)
 
@@ -58,6 +62,10 @@ if test "$PHP_GT1" != "no"; then
   dnl ])
   dnl
   dnl PHP_SUBST(GT1_SHARED_LIBADD)
+  XML_LIBS=$(xml2-config --libs)
+  XML_INCS=$(xml2-config --cflags)
+  PHP_EVAL_LIBLINE($XML_LIBS, GT1_SHARED_LIBADD)
+  PHP_EVAL_INCLINE($XML_INCS)
 
   PHP_NEW_EXTENSION(gt1, gt1.c, $ext_shared)
 fi

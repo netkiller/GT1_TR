@@ -27,12 +27,16 @@
 #include "ext/standard/info.h"
 #include "php_gt1.h"
 
+#include "../curl.h"
+#include "../protocol.h"
+
 /* If you declare any globals in php_gt1.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(gt1)
 */
 
 /* True global resources - no need for thread safety here */
 static int le_gt1;
+zend_class_entry *obj;
 
 /* {{{ gt1_functions[]
  *
@@ -40,9 +44,18 @@ static int le_gt1;
  */
 const zend_function_entry gt1_functions[] = {
 	PHP_FE(confirm_gt1_compiled,	NULL)		/* For testing, remove later. */
+	PHP_FE(hello,	NULL)
+	PHP_FE(myObject,	NULL)
 	PHP_FE_END	/* Must be the last line in gt1_functions[] */
 };
 /* }}} */
+
+const zend_function_entry gt1_class_methods[] = {
+	PHP_ME(GT1, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(GT1, demo, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(GT1, real, NULL, ZEND_ACC_PUBLIC)
+	{NULL, NULL, NULL}
+};
 
 /* {{{ gt1_module_entry
  */
@@ -64,9 +77,9 @@ zend_module_entry gt1_module_entry = {
 };
 /* }}} */
 
-#ifdef COMPILE_DL_GT1
+//#ifdef COMPILE_DL_GT1
 ZEND_GET_MODULE(gt1)
-#endif
+//#endif
 
 /* {{{ PHP_INI
  */
@@ -96,6 +109,9 @@ PHP_MINIT_FUNCTION(gt1)
 	/* If you have INI entries, uncomment these lines 
 	REGISTER_INI_ENTRIES();
 	*/
+	
+	init_class(TSRMLS_C);
+	
 	return SUCCESS;
 }
 /* }}} */
@@ -128,6 +144,17 @@ PHP_RSHUTDOWN_FUNCTION(gt1)
 	return SUCCESS;
 }
 /* }}} */
+
+void init_class(TSRMLS_D) {
+	zend_class_entry ce;
+ 
+	INIT_CLASS_ENTRY(ce, "GT1", gt1_class_methods);
+	//INIT_CLASS_ENTRY(ce, "GT1", Null);
+	obj = zend_register_internal_class(&ce TSRMLS_CC);
+ 
+	//zend_declare_property_bool(obj, "debug", strlen("debug"), 1, ZEND_ACC_PUBLIC TSRMLS_CC);	
+	 
+}
 
 /* {{{ PHP_MINFO_FUNCTION
  */
@@ -170,7 +197,52 @@ PHP_FUNCTION(confirm_gt1_compiled)
    function definition, where the functions purpose is also documented. Please 
    follow this convention for the convenience of others editing your code.
 */
+PHP_FUNCTION(hello) {
+    php_printf("Hello\n");
+}
 
+PHP_FUNCTION(myObject) {
+    object_init(return_value);
+
+    // add a couple of properties
+    zend_update_property_string(NULL, return_value, "name", strlen("name"), "yig" TSRMLS_CC);
+    zend_update_property_long(NULL, return_value, "worshippers", strlen("worshippers"), 4 TSRMLS_CC);
+}
+
+PHP_METHOD(GT1, __construct) {
+  // TODO     
+	php_printf("Hello\n");  
+}
+PHP_METHOD(GT1, demo) {
+	char *arg = NULL;
+	int arg_len, len;
+	char *strg;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+		return;
+	}
+	
+	char *xmlpro = 	protocol_demo(arg);
+	char *html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);
+	len = spprintf(&strg, 0, html, "gt1", arg);
+	RETURN_STRINGL(strg, len, 0);
+}
+PHP_METHOD(GT1, real) {
+	char *arg = NULL;
+	int arg_len, len;
+	char *strg;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+		return;
+	}
+	
+	char *result = login("test1","12123434");
+	char *session = login_session_id(result);
+	char *xmlpro = 	protocol_real(session, arg);
+	char *html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);
+	len = spprintf(&strg, 0, html, "gt1", arg);
+	RETURN_STRINGL(strg, len, 0);
+}
 
 /*
  * Local variables:

@@ -46,6 +46,13 @@ PHP_MINFO_FUNCTION(gt1);
 
 PHP_FUNCTION(confirm_gt1_compiled);	/* For testing, remove later. */
 
+PHP_FUNCTION(hello);
+PHP_METHOD(GT1, __construct);
+PHP_METHOD(GT1, demo);
+PHP_METHOD(GT1, real);
+PHP_FUNCTION(myObject);
+void init_class(TSRMLS_D);
+
 /* 
   	Declare any global variables you may need between the BEGIN
 	and END macros here:     
@@ -73,7 +80,6 @@ ZEND_END_MODULE_GLOBALS(gt1)
 #endif
 
 #endif	/* PHP_GT1_H */
-
 
 /*
  * Local variables:
