@@ -53,6 +53,8 @@ PHP_METHOD(GT1, __construct);
 PHP_METHOD(GT1, demo);
 PHP_METHOD(GT1, login); 
 PHP_METHOD(GT1, real);
+PHP_METHOD(GT1, result);
+
 void init_class(TSRMLS_D);
 
 /* 

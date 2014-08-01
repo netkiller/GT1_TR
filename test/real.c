@@ -46,8 +46,8 @@ void test(char *result) {
 
 int main(int argc, char **argv)
 {
-	printf("sess: %s \n", login("test","12123434"));	
-	char * result = login("test1","12123434");
+	//printf("sess: %s \n", login("test","12123434"));	
+	char * result = login("http://59.152.226.199:3355", "hxpm2","1234qwer");
 	printf("result: %s \n", result);
 	char * session = login_session_id(result);
 	printf("sess: %s \n", session);

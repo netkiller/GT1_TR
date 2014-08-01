@@ -56,6 +56,7 @@ const zend_function_entry gt1_class_methods[] = {
 	PHP_ME(GT1, demo, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(GT1, login, NULL, ZEND_ACC_PUBLIC) 
 	PHP_ME(GT1, real, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(GT1, result, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 
@@ -220,8 +221,8 @@ PHP_FUNCTION(myObject) {
 }
 
 PHP_METHOD(GT1, __construct) {
-  // TODO     
-	php_printf("Hello\n");  
+	// TODO     
+	//php_printf("Hello\n");  
 }
 PHP_METHOD(GT1, demo) {
 	char *arg = NULL;
@@ -233,6 +234,8 @@ PHP_METHOD(GT1, demo) {
 	}
 	
 	char *xmlpro = 	protocol_demo(arg);
+	char *url;
+	asprintf(&url, "%s/add_demo_member.ucs", INI_STR("gt1.url"));		
 	char *html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);
 	len = spprintf(&strg, 0, "%s", html);
 	RETURN_STRINGL(strg, len, 0);
@@ -263,8 +266,7 @@ PHP_METHOD(GT1, login) {
 	}
 	
 	len = spprintf(&strg, 0, "%s", result);
-	RETURN_STRINGL(strg, len, 0);	
-	
+	RETURN_STRINGL(strg, len, 0);
 }
 
 PHP_METHOD(GT1, real) {
@@ -272,18 +274,70 @@ PHP_METHOD(GT1, real) {
 	char *arg = NULL;
 	int arg_len, len;
 	char *strg;
-
+	
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
 		return;
 	}
+	zval *attrs, *obj;
+	obj = getThis();
+	attrs = zend_read_property(Z_OBJCE_P(obj), obj, "session", strlen("session"), 0 TSRMLS_CC);
 	
-	char *result = login("http://59.152.226.199:3355","test1","12123434");
-	char *session = login_session_id(result);
-	char *xmlpro = 	protocol_real(session, arg);
-	char *html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);
-	len = spprintf(&strg, 0, html, "gt1", arg);
+    //php_var_dump(&attrs, 1 TSRMLS_CC);
+	char *session = Z_STRVAL_P(attrs);
+	
+	char *html = NULL;
+	if(session){
+		char *xmlpro = 	protocol_real(session, arg);
+		char *url;
+		asprintf(&url, "%s/add_new_member.ucs", INI_STR("gt1.url"));
+		html = conn(url, xmlpro);
+		//printf("html: %s\n", html);
+	}
+	
+	len = spprintf(&strg, 0, "%s", html);
 	RETURN_STRINGL(strg, len, 0);
 
+}
+PHP_METHOD(GT1, result){
+	char *arg = NULL;
+	int arg_len, len;
+	char *strg;
+	
+	//zval *arr;
+	array_init(return_value);
+	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
+		return;
+	}
+	xmlDocPtr doc = xmlParseDoc(arg);
+	if (doc == NULL ) {
+		fprintf(stderr,"Document not parsed successfully. \n");
+		return;
+	}
+	xmlNodePtr cur = xmlDocGetRootElement(doc);
+	
+	if (cur == NULL) {
+		fprintf(stderr,"empty document\n");
+		xmlFreeDoc(doc);
+		return;
+	}
+	
+	if (xmlStrcmp(cur->name, (const xmlChar *) "Result")) {
+		fprintf(stderr,"document of the wrong type, root node != story");
+		xmlFreeDoc(doc);
+		return;
+	}
+
+	if ((!xmlStrcmp(cur->name, (const xmlChar *)"Result"))) {
+		//printf("uri: %s\n", xmlGetProp(cur, "Code"));
+		xmlAttrPtr attr;
+		for(attr = cur->properties; NULL != attr; attr = attr->next){
+			//printf("uri: %s\n", xmlGetProp(cur, attr->name));
+			add_assoc_string(return_value, attr->name, (char *)xmlGetProp(cur, attr->name), 1);
+		}
+	}
+
+	xmlFreeDoc(doc);
 }
 
 /*

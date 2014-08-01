@@ -122,16 +122,16 @@ char * protocol_real(char * sessionid, char * chinese_name){
 	xmlDocSetRootElement(doc, data);
 
 	amsinfo = xmlNewChild(data, NULL, BAD_CAST "AMSInfo", NULL);
-	xmlNewProp(amsinfo, BAD_CAST "ParentName", BAD_CAST "c1");
-	xmlNewProp(amsinfo, BAD_CAST "LoginName", BAD_CAST "w112");
-	xmlNewProp(amsinfo, BAD_CAST "pwd", BAD_CAST "1234qwer");
-	xmlNewProp(amsinfo, BAD_CAST "NickName", BAD_CAST "w112");
+	xmlNewProp(amsinfo, BAD_CAST "ParentName", BAD_CAST "F0000376");
+	xmlNewProp(amsinfo, BAD_CAST "LoginName", BAD_CAST "");
+	xmlNewProp(amsinfo, BAD_CAST "pwd", BAD_CAST "");
+	xmlNewProp(amsinfo, BAD_CAST "NickName", BAD_CAST "");
 	xmlNewProp(amsinfo, BAD_CAST "Limit", BAD_CAST "0");
 	xmlNewProp(amsinfo, BAD_CAST "Platform", BAD_CAST "CASH_GT1_TR");
 	xmlNewProp(amsinfo, BAD_CAST "Demo", BAD_CAST "0");
 	
 	market = xmlNewChild(amsinfo, NULL, BAD_CAST "Market", NULL);
-	xmlNewProp(market, BAD_CAST "Code", BAD_CAST "c001_TR10");
+	xmlNewProp(market, BAD_CAST "Code", BAD_CAST "c396_TR01");
 	
 	product = xmlNewChild(market, NULL, BAD_CAST "Product", NULL);
 	xmlNewProp(product, BAD_CAST "Code", BAD_CAST "GT1/PM/LLG");
