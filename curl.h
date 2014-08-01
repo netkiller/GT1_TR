@@ -42,7 +42,7 @@ char * conn(char *host, char *protocol)
 		init_string(&s);
 
 		asprintf(&url, "%s?%s",host, curl_easy_escape(curl, protocol, 0));
-		printf("url: %s\n", url);
+		//printf("url: %s\n", url);
 		
 		curl_easy_setopt(curl, CURLOPT_URL, url);
 		curl_easy_setopt(curl, CURLOPT_USERAGENT, "netkiller <netkiller@msn.com>");
