@@ -47,10 +47,12 @@ PHP_MINFO_FUNCTION(gt1);
 PHP_FUNCTION(confirm_gt1_compiled);	/* For testing, remove later. */
 
 PHP_FUNCTION(hello);
+PHP_FUNCTION(myObject);
+
 PHP_METHOD(GT1, __construct);
 PHP_METHOD(GT1, demo);
+PHP_METHOD(GT1, login); 
 PHP_METHOD(GT1, real);
-PHP_FUNCTION(myObject);
 void init_class(TSRMLS_D);
 
 /* 

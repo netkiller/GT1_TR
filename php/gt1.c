@@ -48,11 +48,13 @@ const zend_function_entry gt1_functions[] = {
 	PHP_FE(myObject,	NULL)
 	PHP_FE_END	/* Must be the last line in gt1_functions[] */
 };
+
 /* }}} */
 
 const zend_function_entry gt1_class_methods[] = {
 	PHP_ME(GT1, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME(GT1, demo, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(GT1, login, NULL, ZEND_ACC_PUBLIC) 
 	PHP_ME(GT1, real, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
@@ -83,17 +85,22 @@ ZEND_GET_MODULE(gt1)
 
 /* {{{ PHP_INI
  */
-/* Remove comments and fill if you need to have entries in php.ini
+/* Remove comments and fill if you need to have entries in php.ini */
+
 PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY("gt1.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_gt1_globals, gt1_globals)
-    STD_PHP_INI_ENTRY("gt1.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_gt1_globals, gt1_globals)
+    //STD_PHP_INI_ENTRY("gt1.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_gt1_globals, gt1_globals)
+    //STD_PHP_INI_ENTRY("gt1.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_gt1_globals, gt1_globals)
+	PHP_INI_ENTRY("test", "aaaaaaaaaaaaaaaaaaa", PHP_INI_ALL,  NULL)
+	PHP_INI_ENTRY("gt1.url", "http://localhost", PHP_INI_ALL,  NULL)
+	PHP_INI_ENTRY("gt1.user", "", PHP_INI_ALL,  NULL)
+	PHP_INI_ENTRY("gt1.password", "", PHP_INI_ALL,  NULL)
 PHP_INI_END()
-*/
+
 /* }}} */
 
 /* {{{ php_gt1_init_globals
  */
-/* Uncomment this function if you have INI entries
+/* Uncomment this function if you have INI entries 
 static void php_gt1_init_globals(zend_gt1_globals *gt1_globals)
 {
 	gt1_globals->global_value = 0;
@@ -102,13 +109,23 @@ static void php_gt1_init_globals(zend_gt1_globals *gt1_globals)
 */
 /* }}} */
 
+void init_class(TSRMLS_D) {
+	zend_class_entry ce;
+ 
+	INIT_CLASS_ENTRY(ce, "GT1", gt1_class_methods);
+	//INIT_CLASS_ENTRY(ce, "GT1", Null);
+	obj = zend_register_internal_class(&ce TSRMLS_CC);
+ 
+	zend_declare_property_bool(obj, "debug", strlen("debug"), 1, ZEND_ACC_PUBLIC TSRMLS_CC);	
+	zend_declare_property_string(obj, "session", strlen("session"), "", ZEND_ACC_PUBLIC TSRMLS_CC);	 
+}
+
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(gt1)
 {
-	/* If you have INI entries, uncomment these lines 
+	/* If you have INI entries, uncomment these lines */
 	REGISTER_INI_ENTRIES();
-	*/
 	
 	init_class(TSRMLS_C);
 	
@@ -120,9 +137,9 @@ PHP_MINIT_FUNCTION(gt1)
  */
 PHP_MSHUTDOWN_FUNCTION(gt1)
 {
-	/* uncomment this line if you have INI entries
+	/* uncomment this line if you have INI entries */
 	UNREGISTER_INI_ENTRIES();
-	*/
+	
 	return SUCCESS;
 }
 /* }}} */
@@ -145,23 +162,16 @@ PHP_RSHUTDOWN_FUNCTION(gt1)
 }
 /* }}} */
 
-void init_class(TSRMLS_D) {
-	zend_class_entry ce;
- 
-	INIT_CLASS_ENTRY(ce, "GT1", gt1_class_methods);
-	//INIT_CLASS_ENTRY(ce, "GT1", Null);
-	obj = zend_register_internal_class(&ce TSRMLS_CC);
- 
-	//zend_declare_property_bool(obj, "debug", strlen("debug"), 1, ZEND_ACC_PUBLIC TSRMLS_CC);	
-	 
-}
-
 /* {{{ PHP_MINFO_FUNCTION
  */
 PHP_MINFO_FUNCTION(gt1)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "gt1 support", "enabled");
+	php_info_print_table_row(2, "gt1.author", "Neo Chan<netkiller@msn.com>");
+	php_info_print_table_row(2, "gt1.url", INI_STR("gt1.url"));
+	php_info_print_table_row(2, "gt1.user", INI_STR("gt1.user"));	
+	php_info_print_table_row(2, "gt1.password", INI_STR("gt1.password"));	
 	php_info_print_table_end();
 
 	/* Remove comments if you have entries in php.ini
@@ -224,10 +234,41 @@ PHP_METHOD(GT1, demo) {
 	
 	char *xmlpro = 	protocol_demo(arg);
 	char *html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);
-	len = spprintf(&strg, 0, html, "gt1", arg);
+	len = spprintf(&strg, 0, "%s", html);
 	RETURN_STRINGL(strg, len, 0);
 }
+
+PHP_METHOD(GT1, login) {
+	char *url = INI_STR("gt1.url");
+	char *user = NULL;
+	int user_len;
+	
+	char *password = NULL;
+	int password_len;
+	
+	int len;
+	char *strg;
+	
+	if(ZEND_NUM_ARGS() == 0){
+		user 	 = INI_STR("gt1.user");
+		password = INI_STR("gt1.password");
+	} else if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &user, &user_len, &password, &password_len) == FAILURE) {
+		return;
+	}
+	
+	char *result = login(url, user, password);
+	char *session = login_session_id(result);
+	if(session){
+		zend_update_property_string(obj, getThis(), "session", strlen("session"), session TSRMLS_CC);
+	}
+	
+	len = spprintf(&strg, 0, "%s", result);
+	RETURN_STRINGL(strg, len, 0);	
+	
+}
+
 PHP_METHOD(GT1, real) {
+
 	char *arg = NULL;
 	int arg_len, len;
 	char *strg;
@@ -236,12 +277,13 @@ PHP_METHOD(GT1, real) {
 		return;
 	}
 	
-	char *result = login("test1","12123434");
+	char *result = login("http://59.152.226.199:3355","test1","12123434");
 	char *session = login_session_id(result);
 	char *xmlpro = 	protocol_real(session, arg);
 	char *html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);
 	len = spprintf(&strg, 0, html, "gt1", arg);
 	RETURN_STRINGL(strg, len, 0);
+
 }
 
 /*
@@ -252,3 +294,5 @@ PHP_METHOD(GT1, real) {
  * vim600: noet sw=4 ts=4 fdm=marker
  * vim<600: noet sw=4 ts=4
  */
+
+ 

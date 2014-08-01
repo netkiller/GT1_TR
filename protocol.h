@@ -49,12 +49,14 @@ char * protocol_demo(char * chinese_name){
 	return(rev);
 }
 
-char * login(char * user, char * pass){
+char * login(char * host, char * user, char * password){
+	char * url;
 	char * proto;
 	char * result;
 	
-	asprintf(&proto, "loginname=%s&pwd=%s&type=OP",user, pass);
-	result = conn("http://59.152.226.199:3355/login.ucs", proto);
+	asprintf(&url, "%s/login.ucs", host);
+	asprintf(&proto, "loginname=%s&pwd=%s&type=OP", user, password);
+	result = conn(url, proto);
 	
 	return result;
 }
