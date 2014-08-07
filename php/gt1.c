@@ -57,6 +57,9 @@ const zend_function_entry gt1_class_methods[] = {
 	PHP_ME(GT1, login, NULL, ZEND_ACC_PUBLIC) 
 	PHP_ME(GT1, real, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(GT1, result, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(GT1, transfer, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(GT1, balance, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(GT1, change_password, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 
@@ -117,7 +120,7 @@ void init_class(TSRMLS_D) {
 	//INIT_CLASS_ENTRY(ce, "GT1", Null);
 	obj = zend_register_internal_class(&ce TSRMLS_CC);
  
-	zend_declare_property_bool(obj, "debug", strlen("debug"), 1, ZEND_ACC_PUBLIC TSRMLS_CC);	
+	zend_declare_property_string(obj, "debug", strlen("debug"), "", ZEND_ACC_PUBLIC TSRMLS_CC);	
 	zend_declare_property_string(obj, "session", strlen("session"), "", ZEND_ACC_PUBLIC TSRMLS_CC);	 
 }
 
@@ -236,8 +239,11 @@ PHP_METHOD(GT1, demo) {
 	char *xmlpro = 	protocol_demo(arg);
 	char *url;
 	asprintf(&url, "%s/add_demo_member.ucs", INI_STR("gt1.url"));		
-	char *html = conn("http://59.152.226.199:3355/add_demo_member.ucs", xmlpro);
-	len = spprintf(&strg, 0, "%s", html);
+	char *xml = conn(url, xmlpro);
+	
+	zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+	
+	len = spprintf(&strg, 0, "%s", xml);
 	RETURN_STRINGL(strg, len, 0);
 }
 
@@ -285,16 +291,17 @@ PHP_METHOD(GT1, real) {
     //php_var_dump(&attrs, 1 TSRMLS_CC);
 	char *session = Z_STRVAL_P(attrs);
 	
-	char *html = NULL;
+	char *xml = NULL;
 	if(session){
 		char *xmlpro = 	protocol_real(session, arg);
 		char *url;
 		asprintf(&url, "%s/add_new_member.ucs", INI_STR("gt1.url"));
-		html = conn(url, xmlpro);
-		//printf("html: %s\n", html);
+		xml = conn(url, xmlpro);
+		//printf("xml: %s\n", xml);
+		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
 	}
 	
-	len = spprintf(&strg, 0, "%s", html);
+	len = spprintf(&strg, 0, "%s", xml);
 	RETURN_STRINGL(strg, len, 0);
 
 }
@@ -339,6 +346,108 @@ PHP_METHOD(GT1, result){
 
 	xmlFreeDoc(doc);
 }
+
+PHP_METHOD(GT1, transfer) {
+	char *login = NULL;
+	int login_len;
+	char *amount = NULL;
+	int amount_len;
+	char *extdata = NULL;
+	int extdata_len;
+	
+	char *url, *proto;
+	char *strg;
+	int len;
+	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss", &login, &login_len, &amount, &amount_len, &extdata, &extdata_len) == FAILURE) {
+		return;
+	}
+	zval *attrs, *obj;
+	obj = getThis();
+	attrs = zend_read_property(Z_OBJCE_P(obj), obj, "session", strlen("session"), 0 TSRMLS_CC);
+	char *session = Z_STRVAL_P(attrs);
+	
+	char *xml = NULL;
+	if(session){
+		asprintf(&url, "%s/SpecialAPI/member_transfer.ucs",INI_STR("gt1.url"));
+		asprintf(&proto, "sid=%s&Login=%s&Amount=%s&ExtData=%s", session, login, amount, extdata);
+
+		xml = conn(url, proto);
+		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+		//printf("url %s\nxml: %s\n", url, xml);
+	}
+	
+	len = spprintf(&strg, 0, "%s", xml);
+	RETURN_STRINGL(strg, len, 0);
+}
+
+PHP_METHOD(GT1, balance) {
+	char *login = NULL;
+	int login_len;
+
+	char *url, *proto;
+	char *strg;
+	int len;
+	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &login, &login_len) == FAILURE) {
+		return;
+	}
+	zval *attrs, *obj;
+	obj = getThis();
+	attrs = zend_read_property(Z_OBJCE_P(obj), obj, "session", strlen("session"), 0 TSRMLS_CC);
+	char *session = Z_STRVAL_P(attrs);
+	
+	char *xml = NULL;
+	if(session){
+		asprintf(&url, "%s/check_balance.ucs",INI_STR("gt1.url"));
+		asprintf(&proto, "sid=%s&loginname=%s", session, login);
+
+		xml = conn(url, proto);
+		//printf("url %s\nxml: %s\n", url, xml);
+		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+	}
+	
+	len = spprintf(&strg, 0, "%s", xml);
+	RETURN_STRINGL(strg, len, 0);
+}
+
+PHP_METHOD(GT1, change_password) {
+	char *login = NULL;
+	int login_len;
+
+	char *password = NULL;
+	int password_len;
+	
+	char *newpassword = NULL;
+	int newpassword_len;
+	
+	char *url, *proto;
+	char *strg;
+	int len;
+	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss", &login, &login_len, &password, &password_len, &newpassword, &newpassword_len) == FAILURE) {
+		return;
+	}
+	zval *attrs, *obj;
+	obj = getThis();
+	attrs = zend_read_property(Z_OBJCE_P(obj), obj, "session", strlen("session"), 0 TSRMLS_CC);
+	char *session = Z_STRVAL_P(attrs);
+	
+	char *xml = NULL;
+	if(session){
+		asprintf(&url, "%s/change_customer_pwd.ucs",INI_STR("gt1.url"));
+		asprintf(&proto, "sid=%s&accountno=%s&oldpwd=%s&newpwd=%s&forgotpwd=0&platform=CASH_GT1_TR&updatedate=&", session, login, password, newpassword);
+
+		xml = conn(url, proto);
+		//printf("url %s\nxml: %s\n", url, xml);
+		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+	}
+	
+	len = spprintf(&strg, 0, "%s", xml);
+	RETURN_STRINGL(strg, len, 0);
+}
+
+
 
 /*
  * Local variables:

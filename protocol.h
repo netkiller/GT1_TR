@@ -82,8 +82,6 @@ char * login_session_id(char * result){
 		return;
 	}
 
-	
-	//while (cur != NULL) {
 	if ((!xmlStrcmp(cur->name, (const xmlChar *)"Result"))) {
 		xmlChar *code;
 		code = xmlGetProp(cur, "Code");

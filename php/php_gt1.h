@@ -54,6 +54,9 @@ PHP_METHOD(GT1, demo);
 PHP_METHOD(GT1, login); 
 PHP_METHOD(GT1, real);
 PHP_METHOD(GT1, result);
+PHP_METHOD(GT1, transfer);
+PHP_METHOD(GT1, balance);
+PHP_METHOD(GT1, change_password);
 
 void init_class(TSRMLS_D);
 
