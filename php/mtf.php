@@ -1,10 +1,10 @@
 <?php
 $br = (php_sapi_name() == "cli")? "":"<br>";
 
-if(!extension_loaded('gt1')) {
-	dl('gt1.' . PHP_SHLIB_SUFFIX);
+if(!extension_loaded('mtf')) {
+	dl('mtf.' . PHP_SHLIB_SUFFIX);
 }
-$module = 'gt1';
+$module = 'mtf';
 $functions = get_extension_funcs($module);
 echo "Functions available in the test extension:$br\n";
 foreach($functions as $func) {

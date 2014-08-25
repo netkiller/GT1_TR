@@ -18,45 +18,45 @@
 
 /* $Id$ */
 
-#ifndef PHP_GT1_H
-#define PHP_GT1_H
+#ifndef PHP_MTF_H
+#define PHP_MTF_H
 
-extern zend_module_entry gt1_module_entry;
-#define phpext_gt1_ptr &gt1_module_entry
+extern zend_module_entry mtf_module_entry;
+#define phpext_mtf_ptr &mtf_module_entry
 
-#define PHP_GT1_VERSION "0.1.0" /* Replace with version number for your extension */
+#define PHP_MTF_VERSION "0.1.0" /* Replace with version number for your extension */
 
 #ifdef PHP_WIN32
-#	define PHP_GT1_API __declspec(dllexport)
+#	define PHP_MTF_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
-#	define PHP_GT1_API __attribute__ ((visibility("default")))
+#	define PHP_MTF_API __attribute__ ((visibility("default")))
 #else
-#	define PHP_GT1_API
+#	define PHP_MTF_API
 #endif
 
 #ifdef ZTS
 #include "TSRM.h"
 #endif
 
-PHP_MINIT_FUNCTION(gt1);
-PHP_MSHUTDOWN_FUNCTION(gt1);
-PHP_RINIT_FUNCTION(gt1);
-PHP_RSHUTDOWN_FUNCTION(gt1);
-PHP_MINFO_FUNCTION(gt1);
+PHP_MINIT_FUNCTION(mtf);
+PHP_MSHUTDOWN_FUNCTION(mtf);
+PHP_RINIT_FUNCTION(mtf);
+PHP_RSHUTDOWN_FUNCTION(mtf);
+PHP_MINFO_FUNCTION(mtf);
 
-PHP_FUNCTION(confirm_gt1_compiled);	/* For testing, remove later. */
+PHP_FUNCTION(confirm_mtf_compiled);	/* For testing, remove later. */
 
 PHP_FUNCTION(hello);
 PHP_FUNCTION(myObject);
 
-PHP_METHOD(GT1, __construct);
-PHP_METHOD(GT1, demo);
-PHP_METHOD(GT1, login); 
-PHP_METHOD(GT1, real);
-PHP_METHOD(GT1, result);
-PHP_METHOD(GT1, transfer);
-PHP_METHOD(GT1, balance);
-PHP_METHOD(GT1, change_password);
+PHP_METHOD(MTF, __construct);
+PHP_METHOD(MTF, demo);
+PHP_METHOD(MTF, login); 
+PHP_METHOD(MTF, real);
+PHP_METHOD(MTF, result);
+PHP_METHOD(MTF, transfer);
+PHP_METHOD(MTF, balance);
+PHP_METHOD(MTF, change_password);
 
 void init_class(TSRMLS_D);
 
@@ -64,29 +64,29 @@ void init_class(TSRMLS_D);
   	Declare any global variables you may need between the BEGIN
 	and END macros here:     
 
-ZEND_BEGIN_MODULE_GLOBALS(gt1)
+ZEND_BEGIN_MODULE_GLOBALS(mtf)
 	long  global_value;
 	char *global_string;
-ZEND_END_MODULE_GLOBALS(gt1)
+ZEND_END_MODULE_GLOBALS(mtf)
 */
 
 /* In every utility function you add that needs to use variables 
-   in php_gt1_globals, call TSRMLS_FETCH(); after declaring other 
+   in php_mtf_globals, call TSRMLS_FETCH(); after declaring other 
    variables used by that function, or better yet, pass in TSRMLS_CC
    after the last function argument and declare your utility function
    with TSRMLS_DC after the last declared argument.  Always refer to
-   the globals in your function as GT1_G(variable).  You are 
+   the globals in your function as MTF_G(variable).  You are 
    encouraged to rename these macros something shorter, see
    examples in any other php module directory.
 */
 
 #ifdef ZTS
-#define GT1_G(v) TSRMG(gt1_globals_id, zend_gt1_globals *, v)
+#define MTF_G(v) TSRMG(mtf_globals_id, zend_mtf_globals *, v)
 #else
-#define GT1_G(v) (gt1_globals.v)
+#define MTF_G(v) (mtf_globals.v)
 #endif
 
-#endif	/* PHP_GT1_H */
+#endif	/* PHP_MTF_H */
 
 /*
  * Local variables:

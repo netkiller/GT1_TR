@@ -25,66 +25,66 @@
 #include "php.h"
 #include "php_ini.h"
 #include "ext/standard/info.h"
-#include "php_gt1.h"
+#include "php_mtf.h"
 
 #include "../curl.h"
 #include "../protocol.h"
 
-/* If you declare any globals in php_gt1.h uncomment this:
-ZEND_DECLARE_MODULE_GLOBALS(gt1)
+/* If you declare any globals in php_mtf.h uncomment this:
+ZEND_DECLARE_MODULE_GLOBALS(mtf)
 */
 
 /* True global resources - no need for thread safety here */
-static int le_gt1;
+static int le_mtf;
 zend_class_entry *obj;
 
-/* {{{ gt1_functions[]
+/* {{{ mtf_functions[]
  *
- * Every user visible function must have an entry in gt1_functions[].
+ * Every user visible function must have an entry in mtf_functions[].
  */
-const zend_function_entry gt1_functions[] = {
-	PHP_FE(confirm_gt1_compiled,	NULL)		/* For testing, remove later. */
+const zend_function_entry mtf_functions[] = {
+	PHP_FE(confirm_mtf_compiled,	NULL)		/* For testing, remove later. */
 	PHP_FE(hello,	NULL)
 	PHP_FE(myObject,	NULL)
-	PHP_FE_END	/* Must be the last line in gt1_functions[] */
+	PHP_FE_END	/* Must be the last line in mtf_functions[] */
 };
 
 /* }}} */
 
-const zend_function_entry gt1_class_methods[] = {
-	PHP_ME(GT1, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME(GT1, demo, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(GT1, login, NULL, ZEND_ACC_PUBLIC) 
-	PHP_ME(GT1, real, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(GT1, result, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(GT1, transfer, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(GT1, balance, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(GT1, change_password, NULL, ZEND_ACC_PUBLIC)
+const zend_function_entry mtf_class_methods[] = {
+	PHP_ME(MTF, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(MTF, demo, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(MTF, login, NULL, ZEND_ACC_PUBLIC) 
+	PHP_ME(MTF, real, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(MTF, result, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(MTF, transfer, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(MTF, balance, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(MTF, change_password, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 
-/* {{{ gt1_module_entry
+/* {{{ mtf_module_entry
  */
-zend_module_entry gt1_module_entry = {
+zend_module_entry mtf_module_entry = {
 #if ZEND_MODULE_API_NO >= 20010901
 	STANDARD_MODULE_HEADER,
 #endif
-	"gt1",
-	gt1_functions,
-	PHP_MINIT(gt1),
-	PHP_MSHUTDOWN(gt1),
-	PHP_RINIT(gt1),		/* Replace with NULL if there's nothing to do at request start */
-	PHP_RSHUTDOWN(gt1),	/* Replace with NULL if there's nothing to do at request end */
-	PHP_MINFO(gt1),
+	"mtf",
+	mtf_functions,
+	PHP_MINIT(mtf),
+	PHP_MSHUTDOWN(mtf),
+	PHP_RINIT(mtf),		/* Replace with NULL if there's nothing to do at request start */
+	PHP_RSHUTDOWN(mtf),	/* Replace with NULL if there's nothing to do at request end */
+	PHP_MINFO(mtf),
 #if ZEND_MODULE_API_NO >= 20010901
-	PHP_GT1_VERSION,
+	PHP_MTF_VERSION,
 #endif
 	STANDARD_MODULE_PROPERTIES
 };
 /* }}} */
 
-//#ifdef COMPILE_DL_GT1
-ZEND_GET_MODULE(gt1)
+//#ifdef COMPILE_DL_MTF
+ZEND_GET_MODULE(mtf)
 //#endif
 
 /* {{{ PHP_INI
@@ -92,23 +92,23 @@ ZEND_GET_MODULE(gt1)
 /* Remove comments and fill if you need to have entries in php.ini */
 
 PHP_INI_BEGIN()
-    //STD_PHP_INI_ENTRY("gt1.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_gt1_globals, gt1_globals)
-    //STD_PHP_INI_ENTRY("gt1.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_gt1_globals, gt1_globals)
+    //STD_PHP_INI_ENTRY("mtf.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_mtf_globals, mtf_globals)
+    //STD_PHP_INI_ENTRY("mtf.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_mtf_globals, mtf_globals)
 	PHP_INI_ENTRY("test", "aaaaaaaaaaaaaaaaaaa", PHP_INI_ALL,  NULL)
-	PHP_INI_ENTRY("gt1.url", "http://localhost", PHP_INI_ALL,  NULL)
-	PHP_INI_ENTRY("gt1.user", "", PHP_INI_ALL,  NULL)
-	PHP_INI_ENTRY("gt1.password", "", PHP_INI_ALL,  NULL)
+	PHP_INI_ENTRY("mtf.url", "http://localhost", PHP_INI_ALL,  NULL)
+	PHP_INI_ENTRY("mtf.user", "", PHP_INI_ALL,  NULL)
+	PHP_INI_ENTRY("mtf.password", "", PHP_INI_ALL,  NULL)
 PHP_INI_END()
 
 /* }}} */
 
-/* {{{ php_gt1_init_globals
+/* {{{ php_mtf_init_globals
  */
 /* Uncomment this function if you have INI entries 
-static void php_gt1_init_globals(zend_gt1_globals *gt1_globals)
+static void php_mtf_init_globals(zend_mtf_globals *mtf_globals)
 {
-	gt1_globals->global_value = 0;
-	gt1_globals->global_string = NULL;
+	mtf_globals->global_value = 0;
+	mtf_globals->global_string = NULL;
 }
 */
 /* }}} */
@@ -116,8 +116,8 @@ static void php_gt1_init_globals(zend_gt1_globals *gt1_globals)
 void init_class(TSRMLS_D) {
 	zend_class_entry ce;
  
-	INIT_CLASS_ENTRY(ce, "GT1", gt1_class_methods);
-	//INIT_CLASS_ENTRY(ce, "GT1", Null);
+	INIT_CLASS_ENTRY(ce, "MTF", mtf_class_methods);
+	//INIT_CLASS_ENTRY(ce, "MTF", Null);
 	obj = zend_register_internal_class(&ce TSRMLS_CC);
  
 	zend_declare_property_string(obj, "debug", strlen("debug"), "", ZEND_ACC_PUBLIC TSRMLS_CC);	
@@ -126,7 +126,7 @@ void init_class(TSRMLS_D) {
 
 /* {{{ PHP_MINIT_FUNCTION
  */
-PHP_MINIT_FUNCTION(gt1)
+PHP_MINIT_FUNCTION(mtf)
 {
 	/* If you have INI entries, uncomment these lines */
 	REGISTER_INI_ENTRIES();
@@ -139,7 +139,7 @@ PHP_MINIT_FUNCTION(gt1)
 
 /* {{{ PHP_MSHUTDOWN_FUNCTION
  */
-PHP_MSHUTDOWN_FUNCTION(gt1)
+PHP_MSHUTDOWN_FUNCTION(mtf)
 {
 	/* uncomment this line if you have INI entries */
 	UNREGISTER_INI_ENTRIES();
@@ -151,7 +151,7 @@ PHP_MSHUTDOWN_FUNCTION(gt1)
 /* Remove if there's nothing to do at request start */
 /* {{{ PHP_RINIT_FUNCTION
  */
-PHP_RINIT_FUNCTION(gt1)
+PHP_RINIT_FUNCTION(mtf)
 {
 	return SUCCESS;
 }
@@ -160,7 +160,7 @@ PHP_RINIT_FUNCTION(gt1)
 /* Remove if there's nothing to do at request end */
 /* {{{ PHP_RSHUTDOWN_FUNCTION
  */
-PHP_RSHUTDOWN_FUNCTION(gt1)
+PHP_RSHUTDOWN_FUNCTION(mtf)
 {
 	return SUCCESS;
 }
@@ -168,14 +168,14 @@ PHP_RSHUTDOWN_FUNCTION(gt1)
 
 /* {{{ PHP_MINFO_FUNCTION
  */
-PHP_MINFO_FUNCTION(gt1)
+PHP_MINFO_FUNCTION(mtf)
 {
 	php_info_print_table_start();
-	php_info_print_table_header(2, "gt1 support", "enabled");
-	php_info_print_table_row(2, "gt1.author", "Neo Chan<netkiller@msn.com>");
-	php_info_print_table_row(2, "gt1.url", INI_STR("gt1.url"));
-	php_info_print_table_row(2, "gt1.user", INI_STR("gt1.user"));	
-	php_info_print_table_row(2, "gt1.password", INI_STR("gt1.password"));	
+	php_info_print_table_header(2, "mtf support", "enabled");
+	php_info_print_table_row(2, "mtf.author", "Neo Chan<netkiller@msn.com>");
+	php_info_print_table_row(2, "mtf.url", INI_STR("mtf.url"));
+	php_info_print_table_row(2, "mtf.user", INI_STR("mtf.user"));	
+	php_info_print_table_row(2, "mtf.password", INI_STR("mtf.password"));	
 	php_info_print_table_end();
 
 	/* Remove comments if you have entries in php.ini
@@ -190,9 +190,9 @@ PHP_MINFO_FUNCTION(gt1)
    purposes. */
 
 /* Every user-visible function in PHP should document itself in the source */
-/* {{{ proto string confirm_gt1_compiled(string arg)
+/* {{{ proto string confirm_mtf_compiled(string arg)
    Return a string to confirm that the module is compiled in */
-PHP_FUNCTION(confirm_gt1_compiled)
+PHP_FUNCTION(confirm_mtf_compiled)
 {
 	char *arg = NULL;
 	int arg_len, len;
@@ -202,7 +202,7 @@ PHP_FUNCTION(confirm_gt1_compiled)
 		return;
 	}
 
-	len = spprintf(&strg, 0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "gt1", arg);
+	len = spprintf(&strg, 0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "mtf", arg);
 	RETURN_STRINGL(strg, len, 0);
 }
 /* }}} */
@@ -223,11 +223,11 @@ PHP_FUNCTION(myObject) {
     zend_update_property_long(NULL, return_value, "worshippers", strlen("worshippers"), 4 TSRMLS_CC);
 }
 
-PHP_METHOD(GT1, __construct) {
+PHP_METHOD(MTF, __construct) {
 	// TODO     
 	//php_printf("Hello\n");  
 }
-PHP_METHOD(GT1, demo) {
+PHP_METHOD(MTF, demo) {
 	char *arg = NULL;
 	int arg_len, len;
 	char *strg;
@@ -238,7 +238,7 @@ PHP_METHOD(GT1, demo) {
 	
 	char *xmlpro = 	protocol_demo(arg);
 	char *url;
-	asprintf(&url, "%s/add_demo_member.ucs", INI_STR("gt1.url"));		
+	asprintf(&url, "%s/add_demo_member.ucs", INI_STR("mtf.url"));		
 	char *xml = conn(url, xmlpro);
 	
 	zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
@@ -247,8 +247,8 @@ PHP_METHOD(GT1, demo) {
 	RETURN_STRINGL(strg, len, 0);
 }
 
-PHP_METHOD(GT1, login) {
-	char *url = INI_STR("gt1.url");
+PHP_METHOD(MTF, login) {
+	char *url = INI_STR("mtf.url");
 	char *user = NULL;
 	int user_len;
 	
@@ -259,8 +259,8 @@ PHP_METHOD(GT1, login) {
 	char *strg;
 	
 	if(ZEND_NUM_ARGS() == 0){
-		user 	 = INI_STR("gt1.user");
-		password = INI_STR("gt1.password");
+		user 	 = INI_STR("mtf.user");
+		password = INI_STR("mtf.password");
 	} else if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &user, &user_len, &password, &password_len) == FAILURE) {
 		return;
 	}
@@ -275,7 +275,7 @@ PHP_METHOD(GT1, login) {
 	RETURN_STRINGL(strg, len, 0);
 }
 
-PHP_METHOD(GT1, real) {
+PHP_METHOD(MTF, real) {
 
 	char *arg = NULL;
 	int arg_len, len;
@@ -295,7 +295,7 @@ PHP_METHOD(GT1, real) {
 	if(session){
 		char *xmlpro = 	protocol_real(session, arg);
 		char *url;
-		asprintf(&url, "%s/add_new_member.ucs", INI_STR("gt1.url"));
+		asprintf(&url, "%s/add_new_member.ucs", INI_STR("mtf.url"));
 		xml = conn(url, xmlpro);
 		//printf("xml: %s\n", xml);
 		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
@@ -305,7 +305,7 @@ PHP_METHOD(GT1, real) {
 	RETURN_STRINGL(strg, len, 0);
 
 }
-PHP_METHOD(GT1, result){
+PHP_METHOD(MTF, result){
 	char *arg = NULL;
 	int arg_len, len;
 	char *strg;
@@ -347,7 +347,7 @@ PHP_METHOD(GT1, result){
 	xmlFreeDoc(doc);
 }
 
-PHP_METHOD(GT1, transfer) {
+PHP_METHOD(MTF, transfer) {
 	char *login = NULL;
 	int login_len;
 	char *amount = NULL;
@@ -369,7 +369,7 @@ PHP_METHOD(GT1, transfer) {
 	
 	char *xml = NULL;
 	if(session){
-		asprintf(&url, "%s/SpecialAPI/member_transfer.ucs",INI_STR("gt1.url"));
+		asprintf(&url, "%s/SpecialAPI/member_transfer.ucs",INI_STR("mtf.url"));
 		asprintf(&proto, "sid=%s&Login=%s&Amount=%s&ExtData=%s", session, login, amount, extdata);
 
 		xml = conn(url, proto);
@@ -381,7 +381,7 @@ PHP_METHOD(GT1, transfer) {
 	RETURN_STRINGL(strg, len, 0);
 }
 
-PHP_METHOD(GT1, balance) {
+PHP_METHOD(MTF, balance) {
 	char *login = NULL;
 	int login_len;
 
@@ -399,7 +399,7 @@ PHP_METHOD(GT1, balance) {
 	
 	char *xml = NULL;
 	if(session){
-		asprintf(&url, "%s/check_balance.ucs",INI_STR("gt1.url"));
+		asprintf(&url, "%s/check_balance.ucs",INI_STR("mtf.url"));
 		asprintf(&proto, "sid=%s&loginname=%s", session, login);
 
 		xml = conn(url, proto);
@@ -411,7 +411,7 @@ PHP_METHOD(GT1, balance) {
 	RETURN_STRINGL(strg, len, 0);
 }
 
-PHP_METHOD(GT1, change_password) {
+PHP_METHOD(MTF, change_password) {
 	char *login = NULL;
 	int login_len;
 
@@ -435,7 +435,7 @@ PHP_METHOD(GT1, change_password) {
 	
 	char *xml = NULL;
 	if(session){
-		asprintf(&url, "%s/change_customer_pwd.ucs",INI_STR("gt1.url"));
+		asprintf(&url, "%s/change_customer_pwd.ucs",INI_STR("mtf.url"));
 		asprintf(&proto, "sid=%s&accountno=%s&oldpwd=%s&newpwd=%s&forgotpwd=0&platform=CASH_GT1_TR&updatedate=&", session, login, password, newpassword);
 
 		xml = conn(url, proto);
