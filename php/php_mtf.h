@@ -45,10 +45,10 @@ PHP_RSHUTDOWN_FUNCTION(mtf);
 PHP_MINFO_FUNCTION(mtf);
 
 PHP_FUNCTION(confirm_mtf_compiled);	/* For testing, remove later. */
-
+/*
 PHP_FUNCTION(hello);
 PHP_FUNCTION(myObject);
-
+*/
 PHP_METHOD(MTF, __construct);
 PHP_METHOD(MTF, demo);
 PHP_METHOD(MTF, login); 
@@ -57,6 +57,9 @@ PHP_METHOD(MTF, result);
 PHP_METHOD(MTF, transfer);
 PHP_METHOD(MTF, balance);
 PHP_METHOD(MTF, change_password);
+PHP_METHOD(MTF, change_flag);
+PHP_METHOD(MTF, member_info);
+PHP_METHOD(MTF, member_detail);
 
 void init_class(TSRMLS_D);
 

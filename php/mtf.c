@@ -36,7 +36,7 @@ ZEND_DECLARE_MODULE_GLOBALS(mtf)
 
 /* True global resources - no need for thread safety here */
 static int le_mtf;
-zend_class_entry *obj;
+zend_class_entry *object;
 
 /* {{{ mtf_functions[]
  *
@@ -44,8 +44,10 @@ zend_class_entry *obj;
  */
 const zend_function_entry mtf_functions[] = {
 	PHP_FE(confirm_mtf_compiled,	NULL)		/* For testing, remove later. */
+/*	
 	PHP_FE(hello,	NULL)
 	PHP_FE(myObject,	NULL)
+*/
 	PHP_FE_END	/* Must be the last line in mtf_functions[] */
 };
 
@@ -60,6 +62,9 @@ const zend_function_entry mtf_class_methods[] = {
 	PHP_ME(MTF, transfer, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(MTF, balance, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(MTF, change_password, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(MTF, change_flag, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(MTF, member_info, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME(MTF, member_detail, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 
@@ -118,10 +123,10 @@ void init_class(TSRMLS_D) {
  
 	INIT_CLASS_ENTRY(ce, "MTF", mtf_class_methods);
 	//INIT_CLASS_ENTRY(ce, "MTF", Null);
-	obj = zend_register_internal_class(&ce TSRMLS_CC);
+	object = zend_register_internal_class(&ce TSRMLS_CC);
  
-	zend_declare_property_string(obj, "debug", strlen("debug"), "", ZEND_ACC_PUBLIC TSRMLS_CC);	
-	zend_declare_property_string(obj, "session", strlen("session"), "", ZEND_ACC_PUBLIC TSRMLS_CC);	 
+	zend_declare_property_string(object, "debug", strlen("debug"), "", ZEND_ACC_PUBLIC TSRMLS_CC);	
+	zend_declare_property_string(object, "session", strlen("session"), "", ZEND_ACC_PUBLIC TSRMLS_CC);
 }
 
 /* {{{ PHP_MINIT_FUNCTION
@@ -211,6 +216,7 @@ PHP_FUNCTION(confirm_mtf_compiled)
    function definition, where the functions purpose is also documented. Please 
    follow this convention for the convenience of others editing your code.
 */
+/*
 PHP_FUNCTION(hello) {
     php_printf("Hello\n");
 }
@@ -222,11 +228,16 @@ PHP_FUNCTION(myObject) {
     zend_update_property_string(NULL, return_value, "name", strlen("name"), "yig" TSRMLS_CC);
     zend_update_property_long(NULL, return_value, "worshippers", strlen("worshippers"), 4 TSRMLS_CC);
 }
+*/
 
 PHP_METHOD(MTF, __construct) {
 	// TODO     
 	//php_printf("Hello\n");  
+	char *str="2014-08-27";
+	zend_update_property_string(object, getThis(), "version", strlen("version"), str TSRMLS_CC);
+	//zend_update_property_string(object, getThis(), "session", strlen("session"), session TSRMLS_CC);
 }
+
 PHP_METHOD(MTF, demo) {
 	char *arg = NULL;
 	int arg_len, len;
@@ -240,8 +251,9 @@ PHP_METHOD(MTF, demo) {
 	char *url;
 	asprintf(&url, "%s/add_demo_member.ucs", INI_STR("mtf.url"));		
 	char *xml = conn(url, xmlpro);
-	
-	zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+	char *debug = NULL;
+	asprintf(&debug, "%s?%s",url, xmlpro);
+	zend_update_property_string(object, getThis(), "debug", strlen("debug"), debug TSRMLS_CC);
 	
 	len = spprintf(&strg, 0, "%s", xml);
 	RETURN_STRINGL(strg, len, 0);
@@ -268,9 +280,9 @@ PHP_METHOD(MTF, login) {
 	char *result = login(url, user, password);
 	char *session = login_session_id(result);
 	if(session){
-		zend_update_property_string(obj, getThis(), "session", strlen("session"), session TSRMLS_CC);
+		zend_update_property_string(object, getThis(), "session", strlen("session"), session TSRMLS_CC);
 	}
-	
+	zend_update_property_string(object, getThis(), "debug", strlen("debug"), result TSRMLS_CC);
 	len = spprintf(&strg, 0, "%s", result);
 	RETURN_STRINGL(strg, len, 0);
 }
@@ -297,8 +309,10 @@ PHP_METHOD(MTF, real) {
 		char *url;
 		asprintf(&url, "%s/add_new_member.ucs", INI_STR("mtf.url"));
 		xml = conn(url, xmlpro);
-		//printf("xml: %s\n", xml);
-		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+		
+		char *debug = NULL;
+		asprintf(&debug, "%s?%s",url, xmlpro);
+		zend_update_property_string(object, getThis(), "debug", strlen("debug"), debug TSRMLS_CC);
 	}
 	
 	len = spprintf(&strg, 0, "%s", xml);
@@ -310,7 +324,8 @@ PHP_METHOD(MTF, result){
 	int arg_len, len;
 	char *strg;
 	
-	//zval *arr;
+	zend_update_property_string(object, getThis(), "debug", strlen("debug"), "" TSRMLS_CC);
+
 	array_init(return_value);
 	
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
@@ -354,12 +369,14 @@ PHP_METHOD(MTF, transfer) {
 	int amount_len;
 	char *extdata = NULL;
 	int extdata_len;
+	char *dealid = NULL;
+	int dealid_len;
 	
 	char *url, *proto;
 	char *strg;
 	int len;
 	
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss", &login, &login_len, &amount, &amount_len, &extdata, &extdata_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ssss", &login, &login_len, &amount, &amount_len, &extdata, &extdata_len, &dealid, &dealid_len) == FAILURE) {
 		return;
 	}
 	zval *attrs, *obj;
@@ -368,12 +385,15 @@ PHP_METHOD(MTF, transfer) {
 	char *session = Z_STRVAL_P(attrs);
 	
 	char *xml = NULL;
+	char *debug = NULL;
+	
 	if(session){
 		asprintf(&url, "%s/SpecialAPI/member_transfer.ucs",INI_STR("mtf.url"));
-		asprintf(&proto, "sid=%s&Login=%s&Amount=%s&ExtData=%s", session, login, amount, extdata);
-
+		asprintf(&proto, "sid=%s&Login=%s&Amount=%s&ExtData=%s&DealID=%s", session, login, amount, extdata, dealid);
+		asprintf(&debug, "%s?%s",url, proto);
+		
 		xml = conn(url, proto);
-		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+		zend_update_property_string(object, getThis(), "debug", strlen("debug"), debug TSRMLS_CC);
 		//printf("url %s\nxml: %s\n", url, xml);
 	}
 	
@@ -403,8 +423,10 @@ PHP_METHOD(MTF, balance) {
 		asprintf(&proto, "sid=%s&loginname=%s", session, login);
 
 		xml = conn(url, proto);
-		//printf("url %s\nxml: %s\n", url, xml);
-		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+		
+		char *debug = NULL;
+		asprintf(&debug, "%s?%s",url, proto);
+		zend_update_property_string(object, getThis(), "debug", strlen("debug"), debug TSRMLS_CC);
 	}
 	
 	len = spprintf(&strg, 0, "%s", xml);
@@ -439,14 +461,24 @@ PHP_METHOD(MTF, change_password) {
 		asprintf(&proto, "sid=%s&accountno=%s&oldpwd=%s&newpwd=%s&forgotpwd=0&platform=CASH_GT1_TR&updatedate=&", session, login, password, newpassword);
 
 		xml = conn(url, proto);
-		//printf("url %s\nxml: %s\n", url, xml);
-		zend_update_property_string(obj, getThis(), "debug", strlen(xml), xml TSRMLS_CC);
+		
+		char *debug = NULL;
+		asprintf(&debug, "%s?%s",url, proto);
+		zend_update_property_string(object, getThis(), "debug", strlen("debug"), debug TSRMLS_CC);
 	}
 	
 	len = spprintf(&strg, 0, "%s", xml);
 	RETURN_STRINGL(strg, len, 0);
 }
 
+PHP_METHOD(MTF, change_flag) {
+
+}
+
+PHP_METHOD(MTF, member_info) {
+}
+PHP_METHOD(MTF, member_detail) {
+}
 
 
 /*

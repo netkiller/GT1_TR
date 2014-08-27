@@ -244,3 +244,33 @@ char * protocol_real(char * sessionid, char * chinese_name){
 
 	return(rev);
 }
+char * protocol_flag(char * session, char * loginname, char * flag){
+	/* FLAG表示会员的状态，0，1，-1，-2，四种状态，0为启用、1为冻结、-1为暂停与-2为禁用，如FLAG="0" */
+	char * rev;
+	xmlDocPtr doc = NULL;
+	xmlNodePtr data = NULL, amsinfo = NULL, cus = NULL, cusinfo = NULL;
+
+	doc = xmlNewDoc(BAD_CAST "1.0"); // create a new xml document.
+	data = xmlNewNode(NULL, BAD_CAST "Data"); // create a root node.
+	xmlNewProp(data, BAD_CAST "SessionId", BAD_CAST session);
+	xmlDocSetRootElement(doc, data);
+
+	amsinfo = xmlNewChild(data, NULL, BAD_CAST "AMSInfo", NULL);
+	xmlNewProp(amsinfo, BAD_CAST "Loginname", BAD_CAST loginname);
+	xmlNewProp(amsinfo, BAD_CAST "ParentName", BAD_CAST "F0000375");
+	xmlNewProp(amsinfo, BAD_CAST "Platform", BAD_CAST "CASH_GT1_TR");
+	xmlNewProp(amsinfo, BAD_CAST "Flag", BAD_CAST flag);
+
+	xmlAddChild(data, amsinfo);
+
+	xmlChar *s;
+	int size;
+	xmlDocDumpMemory(doc, &s, &size);
+	asprintf(&rev, "%s", (char *)s+22);
+	xmlFree(s);
+	
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+
+	return(rev);
+}
