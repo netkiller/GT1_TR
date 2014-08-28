@@ -1,5 +1,6 @@
 <?php
 $mtf = new MTF();
+/*
 print_r($mtf);
 $proto = $mtf->demo("test");
 print_r($mtf);
@@ -28,4 +29,7 @@ print_r($mtf->result($mtf->balance($rev['Login'])));
 //print_r($mtf->result($mtf->balance('30000689')));
 //echo $mtf->debug;
 //print_r($mtf->change_password('30000696','abc123', 'jkjk9898'));
+*/
 
+$mtf->login();
+print_r($mtf->change_flag('30000766','0'));

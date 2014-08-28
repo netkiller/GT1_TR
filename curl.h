@@ -49,7 +49,7 @@ char * conn(char *host, char *protocol)
 		curl_easy_setopt(curl, CURLOPT_USERAGENT, "netkiller <netkiller@msn.com>");
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, long timeout);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeout);
 	 
 		/* Perform the request, res will get the return code */ 
 		res = curl_easy_perform(curl);

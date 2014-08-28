@@ -12,7 +12,8 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author:                                                              |
+  | Author: Netkiller <netkiller@msn.com>                                |
+  | Homepage: http://netkiller.github.io                                 |
   +----------------------------------------------------------------------+
 */
 
@@ -472,7 +473,38 @@ PHP_METHOD(MTF, change_password) {
 }
 
 PHP_METHOD(MTF, change_flag) {
-
+	char *loginname = NULL;
+	int loginname_len;
+	char *flag = NULL;
+	int flag_len;
+	
+	char *strg;
+	int len;
+	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &loginname, &loginname_len, &flag, &flag_len) == FAILURE) {
+		return;
+	}
+	zval *attrs, *obj;
+	obj = getThis();
+	attrs = zend_read_property(Z_OBJCE_P(obj), obj, "session", strlen("session"), 0 TSRMLS_CC);
+	
+    //php_var_dump(&attrs, 1 TSRMLS_CC);
+	char *session = Z_STRVAL_P(attrs);
+	
+	char *xml = NULL;
+	if(session){
+		char *xmlpro = 	protocol_flag(session, loginname, flag);
+		char *url;
+		asprintf(&url, "%s/change_member_flag.ucs", INI_STR("mtf.url"));
+		xml = conn(url, xmlpro);
+		
+		char *debug = NULL;
+		asprintf(&debug, "%s?%s",url, xmlpro);
+		zend_update_property_string(object, getThis(), "debug", strlen("debug"), debug TSRMLS_CC);
+	}
+	
+	len = spprintf(&strg, 0, "%s", xml);
+	RETURN_STRINGL(strg, len, 0);
 }
 
 PHP_METHOD(MTF, member_info) {
